@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Emergency Information</string>
+    <string name="action_settings">Settings</string>
+    <string name="textview_load_data">Load Emergency Data</string>
+    <string name="button_blood">Blood Bank</string>
+    <string name="button_newspaper">News Paper</string>
+    <string name="button_dental">Dental Clinics</string>
+    <string name="button_hospital">Hospitals</string>
+    <string name="button_pharmacy">Pharmacy</string>
+    <string name="button_ngo">NGO</string>
+    <string name="button_rab">RAB</string>
+    <string name="action_search">Search</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="icon">Icon</string>
+
+</resources>
