@@ -1,21 +1,26 @@
 package edu.aiub.farhanarrafi.emergencyinformation;
 
-import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class LoadDataActivity extends Activity implements AsycResponseI, OnClickListener {
+@SuppressWarnings("deprecation")
+public class LoadDataActivity extends ActionBarActivity implements AsycResponseI, OnClickListener {
 	Button newspaperB, hospitalB, pharmacyB, dentalB, bloodB, ngoB, rabB;
 	TextView textView;
-	Intent intent;
+	
 	ConnectivityManager connManager;
 	
 	@Override
@@ -44,38 +49,14 @@ public class LoadDataActivity extends Activity implements AsycResponseI, OnClick
         rabB = (Button) findViewById(R.id.button_rab);
         rabB.setOnClickListener(this);
         
-        
-        if(networkAvailable()) {
-        	intent = getIntent();
-            String dataUrl = intent.getStringExtra("url");
-            //textView = (TextView) findViewById(R.id.textView_loadData);
-//            String dataUrl = "http://eatl-android-farhan.net63.net/output/pharmacy.php";
-            FetchDataC fetch = new FetchDataC(this);
-            fetch.response = this;
-            fetch.execute(dataUrl);
-        }
-        else {
-        	Log.d("Network Error", "Network not Available!!");
-        	finish();
-        }
-        
-        
+        textView = (TextView) findViewById(R.id.textViewLoadData);
         
     }
 
 	@Override
 	public void fetchResult(String result) {
 		result = result.split("<")[0];
-		
-//		JSONObject jsonObj;
-//		try {
-//			jsonObj = new JSONObject(result);
-//			textView.setText("NAME");
-//		} catch (JSONException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		
+
 		textView.setText(result);
 		
 	}
@@ -113,11 +94,35 @@ public class LoadDataActivity extends Activity implements AsycResponseI, OnClick
 		}
 		 
 		//Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
+		if(networkAvailable()) {
+            FetchDataC fetch = new FetchDataC(this);
+            fetch.response = this;
+            fetch.execute(url);
+        }
+        else {
+        	Toast.makeText(this,"NETWORK ERROR", Toast.LENGTH_SHORT).show();
+        	Log.d("Network Error", "Network not Available!!");
+        }
 		
-		Intent intent = new Intent(this, LoadDataActivity.class);
-		intent.putExtra("url", url);
-        startActivity(intent);
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.search, menu);
+		return super.onCreateOptionsMenu(menu);
+		
+		
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		
+		return super.onOptionsItemSelected(item);
+	}
 	
 }
