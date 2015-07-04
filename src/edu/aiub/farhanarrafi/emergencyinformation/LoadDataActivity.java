@@ -1,6 +1,12 @@
 package edu.aiub.farhanarrafi.emergencyinformation;
 
-import android.app.SearchManager;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,7 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +29,12 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 	Button newspaperB, hospitalB, pharmacyB, dentalB, bloodB, ngoB, rabB;
 	TextView textView;
 	
+	DatabaseHelperC dbHelper;
 	ConnectivityManager connManager;
+	
+	ArrayList<String> resultArray = new ArrayList<String>();
+	
+	ArrayAdapter<String> adapter;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +64,69 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
         
         textView = (TextView) findViewById(R.id.textViewLoadData);
         
+        dbHelper = new DatabaseHelperC(getApplicationContext());
     }
 
 	@Override
 	public void fetchResult(String result) {
 		result = result.split("<")[0];
-
-		textView.setText(result);
+		boolean flag = false;;
+		try {
+			flag = parseJSON(result);
+		} catch (JSONException e) {
+			flag = false;
+			Log.d("error", "JSON Parse error");
+			e.printStackTrace();
+		}
+		
+//		textView.setText(result);
+		
+		setContentView(R.layout.activity_data_display);
+		
+		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, resultArray);
+		
+		ListView listView = (ListView) findViewById(R.id.ListView_Display_Data);
+		listView.setAdapter(adapter);
 		
 	}
+	
+	public boolean parseJSON(String result) throws JSONException {
+		//JSONObject jsonObj = new JSONObject(result);
+		JSONArray jsonArr = new JSONArray(result);
+		
+		
+		
+		
+		
+		if(jsonArr.length()>0) {
+			String string = "";
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				
+				if(json.length()<=2) {
+					String name =  json.get("name").toString();
+					String address =  json.get("address").toString();
+					string = "Name: " + name + "\nAddress: " + address;
+				} else {
+					String name =  json.get("name").toString();
+					String phone =  json.get("phone").toString();
+					String address =  json.get("address").toString();
+					string = "Name: " + name + "\nPhone: " + phone + "\nAddress: " + address;
+				}
+				resultArray.add(string);
+			}
+			if(resultArray.isEmpty()) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		return false;
+//		Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
+		
+	}
+	
 	
 	public boolean networkAvailable() {
 		connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -121,6 +188,8 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
+		
+		
 		
 		return super.onOptionsItemSelected(item);
 	}

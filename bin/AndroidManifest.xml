@@ -25,22 +25,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        
-        
         <activity android:name=".LoadDataActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.aiub.farhanarrafi.emergencyinformation.MainActivity" />
         </activity>
-        
-        
-        
-        <activity
-            android:name=".SearchActivity">
+        <activity android:name=".SearchActivity" >
             <intent-filter>
-                <action android:name="android.search.action.SEARCH"/>
+                <action android:name="android.search.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -48,9 +42,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.aiub.farhanarrafi.emergencyinformation.MainActivity" />
         </activity>
-        
-        
-        
+        <activity
+            android:name=".DataDisplayActivity"
+            android:label="@string/title_activity_data_display"
+            android:parentActivityName=".LoadDataActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.aiub.farhanarrafi.emergencyinformation.LoadDataActivity" />
+        </activity>
     </application>
 
 </manifest>
