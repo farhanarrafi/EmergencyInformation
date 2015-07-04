@@ -1,14 +1,8 @@
 package edu.aiub.farhanarrafi.emergencyinformation;
 
-import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import edu.aiub.farhanarrafi.emergencyinformation.helper.*;
-import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.*;
-
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,25 +21,33 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.AsycResponseI;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseHelperC;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.BloodBank;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Dental;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Hospital;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Newspaper;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Ngo;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Pharmacy;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Rab;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.FetchDataC;
 
 @SuppressWarnings("deprecation")
-public class LoadDataActivity extends ActionBarActivity implements AsycResponseI, OnClickListener {
+public class LoadDataActivity extends ActionBarActivity implements AsycResponseI {
 	
-	private static final String PREFERNCE_FIRST_RUN = null;
+	Button update_DB;
 	
-	Button newspaperB, hospitalB, pharmacyB, dentalB, bloodB, ngoB, rabB;
+	private static final String PREFERNCE_FIRST_RUN = "FIRST_RUN";
+	
 	TextView textView;
 	FetchDataC fetch;
 	DatabaseHelperC dbHelper;
 	ConnectivityManager connManager;
 	String currentUrl = "";
-	ArrayList<String> resultArray = new ArrayList<String>();
 	JSONArray jsonArr;
 	ArrayAdapter<String> adapter;
-	
 	SharedPreferences preference;
 	
 	@Override
@@ -53,39 +55,29 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_data);
         
-        newspaperB = (Button) findViewById(R.id.button_newspaper);
-        newspaperB.setOnClickListener(this);
         
-        hospitalB = (Button) findViewById(R.id.button_hospital);
-        hospitalB.setOnClickListener(this);
-        
-        pharmacyB = (Button) findViewById(R.id.button_pharmacy);
-        pharmacyB.setOnClickListener(this);
-        
-        dentalB = (Button) findViewById(R.id.button_dental);
-        dentalB.setOnClickListener(this);
-        
-        bloodB = (Button) findViewById(R.id.button_blood);
-        bloodB.setOnClickListener(this);
-        
-        ngoB = (Button) findViewById(R.id.button_ngo);
-        ngoB.setOnClickListener(this);
-        
-        rabB = (Button) findViewById(R.id.button_rab);
-        rabB.setOnClickListener(this);
-        
-        textView = (TextView) findViewById(R.id.textViewLoadData);
         
         dbHelper = new DatabaseHelperC(getApplicationContext());
         
         preference = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isFirstRun = preference.getBoolean(PREFERNCE_FIRST_RUN, true);
-        
-        
         if(isFirstRun) {
         	loadDatabaseData();
         	preference.edit().putBoolean(PREFERNCE_FIRST_RUN, false).commit();
         }
+        
+        update_DB = (Button) findViewById(R.id.update_database);
+        update_DB.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dbHelper = new DatabaseHelperC(getApplicationContext());
+				SQLiteDatabase db = dbHelper.getWritableDatabase();
+				dbHelper.onUpgrade(db, 2, 1);
+				loadDatabaseData();
+				preference.edit().putBoolean(PREFERNCE_FIRST_RUN, false).commit();
+			}
+		});
     }
 	
 	public void loadDatabaseData() {
@@ -100,7 +92,8 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		urlPost[5] = "ngo.php";
 		urlPost[6] = "rab.php";
 		for (int i = 0; i < urlPost.length; i++) {
-			newUrl = url.concat(urlPost[i]);
+			currentUrl = urlPost[i];
+			newUrl = url.concat(currentUrl);
 			if(networkAvailable()) {
 	            fetch = new FetchDataC(this);
 	            fetch.response = this;
@@ -109,10 +102,7 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 	        	Toast.makeText(this,"NETWORK ERROR", Toast.LENGTH_SHORT).show();
 	        	Log.d("Network Error", "Network not Available!!");
 	        }
-		}
-		 
-		
-			
+		}	
 	}
 
 	@Override
@@ -127,23 +117,13 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 			Log.d("error", "JSON Parse error");
 			e.printStackTrace();
 		}
-		
 		if(flag == true) {
-			
 			try {
 				this.storeDataInDatabase();
 			} catch (JSONException e) {
-				
 				e.printStackTrace();
 			}
-			/*
-			setContentView(R.layout.activity_data_display);
-			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, resultArray);
-
-			ListView listView = (ListView) findViewById(R.id.ListView_Display_Data);
-			listView.setAdapter(adapter);*/
-		}	
-//		textView.setText(result);
+		}
 	}
 	
 	public boolean parseJSON(String result) throws JSONException {
@@ -151,37 +131,13 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		jsonArr = new JSONArray(result);
 
 		if(jsonArr.length()>0) {
-			String string = "";
-			for (int i = 1; i < jsonArr.length(); i++) {
-				JSONObject json = (JSONObject) jsonArr.get(i);
-				
-				if(json.length()<=2) {
-					String name =  json.get("name").toString();
-					String address =  json.get("address").toString();
-					string = "Name: " + name + "\nAddress: " + address;
-				} else {
-					String name =  json.get("name").toString();
-					String phone =  json.get("phone").toString();
-					String address =  json.get("address").toString();
-					string = "Name: " + name + "\nPhone: " + phone + "\nAddress: " + address;
-				}
-				resultArray.add(string);
-			}
-			if(resultArray.isEmpty()) {
-				return false;
-			}
-			else {
-				return true;
-			}
+			return true;
 		}
 		return false;
-//		Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
 	}
 	
 	public void storeDataInDatabase() throws JSONException {
-		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
 		
 		ContentValues values = new ContentValues();
 		
@@ -194,8 +150,6 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 				long newRowID = db.insert(Newspaper.TABLE_NAME, null, values);
 				Log.d("insertid", ""+newRowID);
 			}
-			
-		
 		} else if(currentUrl.equals("hospital.php")) {
 			for (int i = 1; i < jsonArr.length(); i++) {
 				JSONObject json = (JSONObject) jsonArr.get(i);
@@ -264,40 +218,6 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		return false;
 	}
 
-	@Override
-	public void onClick(View v) {
-		String url = "http://eatl-android-farhan.net63.net/output/";
-		
-		if(v.getId() == newspaperB.getId()) {
-			currentUrl = "newspaper.php";
-		} else if(v.getId() == hospitalB.getId()) {
-			currentUrl = "hospital.php";
-		} else if(v.getId() == pharmacyB.getId()) {
-			currentUrl = "pharmacy.php";
-		} else if(v.getId() == dentalB.getId()) {
-			currentUrl = "dental.php";
-		} else if(v.getId() == bloodB.getId()) {
-			currentUrl = "bloodbank.php";
-		} else if(v.getId() == ngoB.getId()) {
-			currentUrl = "ngo.php";
-		} else if(v.getId() == rabB.getId()) {
-			currentUrl = "rab.php";
-		}
-		
-		url = url.concat(currentUrl);
-		 
-		//Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
-		if(networkAvailable()) {
-            fetch = new FetchDataC(this);
-            fetch.response = this;
-            fetch.execute(url);
-        }
-        else {
-        	Toast.makeText(this,"NETWORK ERROR", Toast.LENGTH_SHORT).show();
-        	Log.d("Network Error", "Network not Available!!");
-        }
-		
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

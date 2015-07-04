@@ -85,6 +85,8 @@ public class DatabaseHelperC extends SQLiteOpenHelper {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		// TODO Auto-generated constructor stub
 	}
+	
+	
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {

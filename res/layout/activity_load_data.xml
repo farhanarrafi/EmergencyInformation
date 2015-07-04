@@ -31,51 +31,9 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_hospital"
+        android:id="@+id/update_database"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_hospital" />
-
-    <Button
-        android:id="@+id/button_blood"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_blood" />
-
-    <Button
-        android:id="@+id/button_dental"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_dental" />
-
-    <Button
-        android:id="@+id/button_newspaper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_newspaper" />
-
-    <Button
-        android:id="@+id/button_pharmacy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_pharmacy" />
-    
-    <Button
-        android:id="@+id/button_ngo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_ngo" />
-    
-    <Button
-        android:id="@+id/button_rab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_rab" />
-
-    <TextView
-        android:id="@+id/textViewLoadData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="" />
+        android:text="@string/button_update_database" />
 
 </LinearLayout>
