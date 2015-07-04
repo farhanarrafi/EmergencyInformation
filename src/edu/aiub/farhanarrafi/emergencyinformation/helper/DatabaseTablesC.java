@@ -1,4 +1,4 @@
-package edu.aiub.farhanarrafi.emergencyinformation;
+package edu.aiub.farhanarrafi.emergencyinformation.helper;
 
 import android.provider.BaseColumns;
 
@@ -24,14 +24,18 @@ public final class DatabaseTablesC {
 	
 	public static abstract class Hospital implements BaseColumns {
 		public static final String TABLE_NAME = "hospital";
-		public static final String COLUMN_ID = "hospitalid";
+		public static final String COLUMN_NAME = "name";
+		public static final String COLUMN_ADDRESS = "address";
+	}
+	
+	public static abstract class Dental implements BaseColumns {
+		public static final String TABLE_NAME = "dental";
 		public static final String COLUMN_NAME = "name";
 		public static final String COLUMN_ADDRESS = "address";
 	}
 	
 	public static abstract class Newspaper implements BaseColumns {
 		public static final String TABLE_NAME = "newspaper";
-		public static final String COLUMN_ID = "newspaperid";
 		public static final String COLUMN_NAME = "name";
 		public static final String COLUMN_PHONE = "phone";
 		public static final String COLUMN_ADDRESS = "address";
@@ -39,28 +43,24 @@ public final class DatabaseTablesC {
 	
 	public static abstract class Pharmacy implements BaseColumns {
 		public static final String TABLE_NAME = "pharmacy";
-		public static final String COLUMN_ID = "pharmacyid";
 		public static final String COLUMN_NAME = "name";
 		public static final String COLUMN_ADDRESS = "address";
 	}
 	
 	public static abstract class BloodBank implements BaseColumns {
 		public static final String TABLE_NAME = "bloodbank";
-		public static final String COLUMN_ID = "bloodbankid";
 		public static final String COLUMN_NAME = "name";
 		public static final String COLUMN_ADDRESS = "address";
 	}
 	
 	public static abstract class Ngo implements BaseColumns {
 		public static final String TABLE_NAME = "ngo";
-		public static final String COLUMN_ID = "ngoid";
 		public static final String COLUMN_NAME = "name";
 		public static final String COLUMN_ADDRESS = "address";
 	}
 	
 	public static abstract class Rab implements BaseColumns {
 		public static final String TABLE_NAME = "rab";
-		public static final String COLUMN_ID = "rabid";
 		public static final String COLUMN_NAME = "name";
 		public static final String COLUMN_ADDRESS = "address";
 	}

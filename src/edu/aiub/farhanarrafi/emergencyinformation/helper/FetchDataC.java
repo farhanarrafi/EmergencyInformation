@@ -1,4 +1,4 @@
-package edu.aiub.farhanarrafi.emergencyinformation;
+package edu.aiub.farhanarrafi.emergencyinformation.helper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import android.util.Log;
 public class FetchDataC extends AsyncTask<String, Void, String> {
 	Context context;
 	InputStream iStream;
-	AsycResponseI response = null;
+	public AsycResponseI response = null;
 	HttpURLConnection conn;
 	
 	public FetchDataC(Context context) {

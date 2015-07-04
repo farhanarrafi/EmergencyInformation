@@ -1,4 +1,4 @@
-package edu.aiub.farhanarrafi.emergencyinformation;
+package edu.aiub.farhanarrafi.emergencyinformation.helper;
 
 public interface AsycResponseI {
 	

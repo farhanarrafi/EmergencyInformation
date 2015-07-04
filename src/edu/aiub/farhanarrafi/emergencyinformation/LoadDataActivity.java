@@ -6,11 +6,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.aiub.farhanarrafi.emergencyinformation.helper.*;
+import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.*;
 
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -26,15 +33,20 @@ import android.widget.Toast;
 
 @SuppressWarnings("deprecation")
 public class LoadDataActivity extends ActionBarActivity implements AsycResponseI, OnClickListener {
+	
+	private static final String PREFERNCE_FIRST_RUN = null;
+	
 	Button newspaperB, hospitalB, pharmacyB, dentalB, bloodB, ngoB, rabB;
 	TextView textView;
-	
+	FetchDataC fetch;
 	DatabaseHelperC dbHelper;
 	ConnectivityManager connManager;
-	
+	String currentUrl = "";
 	ArrayList<String> resultArray = new ArrayList<String>();
-	
+	JSONArray jsonArr;
 	ArrayAdapter<String> adapter;
+	
+	SharedPreferences preference;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +77,47 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
         textView = (TextView) findViewById(R.id.textViewLoadData);
         
         dbHelper = new DatabaseHelperC(getApplicationContext());
+        
+        preference = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isFirstRun = preference.getBoolean(PREFERNCE_FIRST_RUN, true);
+        
+        
+        if(isFirstRun) {
+        	loadDatabaseData();
+        	preference.edit().putBoolean(PREFERNCE_FIRST_RUN, false).commit();
+        }
     }
+	
+	public void loadDatabaseData() {
+		String newUrl,url = "http://eatl-android-farhan.net63.net/output/";
+		String[] urlPost = new String[7];
+		
+		urlPost[0] = "newspaper.php";
+		urlPost[1] = "hospital.php";
+		urlPost[2] = "pharmacy.php";
+		urlPost[3] = "dental.php";
+		urlPost[4] = "bloodbank.php";
+		urlPost[5] = "ngo.php";
+		urlPost[6] = "rab.php";
+		for (int i = 0; i < urlPost.length; i++) {
+			newUrl = url.concat(urlPost[i]);
+			if(networkAvailable()) {
+	            fetch = new FetchDataC(this);
+	            fetch.response = this;
+	            fetch.execute(newUrl);
+	        } else {
+	        	Toast.makeText(this,"NETWORK ERROR", Toast.LENGTH_SHORT).show();
+	        	Log.d("Network Error", "Network not Available!!");
+	        }
+		}
+		 
+		
+			
+	}
 
 	@Override
 	public void fetchResult(String result) {
+		fetch.cancel(false);
 		result = result.split("<")[0];
 		boolean flag = false;;
 		try {
@@ -79,25 +128,28 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 			e.printStackTrace();
 		}
 		
+		if(flag == true) {
+			
+			try {
+				this.storeDataInDatabase();
+			} catch (JSONException e) {
+				
+				e.printStackTrace();
+			}
+			/*
+			setContentView(R.layout.activity_data_display);
+			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, resultArray);
+
+			ListView listView = (ListView) findViewById(R.id.ListView_Display_Data);
+			listView.setAdapter(adapter);*/
+		}	
 //		textView.setText(result);
-		
-		setContentView(R.layout.activity_data_display);
-		
-		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, resultArray);
-		
-		ListView listView = (ListView) findViewById(R.id.ListView_Display_Data);
-		listView.setAdapter(adapter);
-		
 	}
 	
 	public boolean parseJSON(String result) throws JSONException {
 		//JSONObject jsonObj = new JSONObject(result);
-		JSONArray jsonArr = new JSONArray(result);
-		
-		
-		
-		
-		
+		jsonArr = new JSONArray(result);
+
 		if(jsonArr.length()>0) {
 			String string = "";
 			for (int i = 1; i < jsonArr.length(); i++) {
@@ -124,6 +176,78 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		}
 		return false;
 //		Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
+	}
+	
+	public void storeDataInDatabase() throws JSONException {
+		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		
+		ContentValues values = new ContentValues();
+		
+		if(currentUrl.equals("newspaper.php")) {
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(Newspaper.COLUMN_NAME, json.get("name").toString());
+				values.put(Newspaper.COLUMN_PHONE, json.get("phone").toString());
+				values.put(Newspaper.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(Newspaper.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+			
+		
+		} else if(currentUrl.equals("hospital.php")) {
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(Hospital.COLUMN_NAME, json.get("name").toString());
+				values.put(Hospital.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(Hospital.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+		} else if(currentUrl.equals("bloodbank.php")) {
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(BloodBank.COLUMN_NAME, json.get("name").toString());
+				values.put(BloodBank.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(BloodBank.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+		} else if(currentUrl.equals("pharmacy.php")) {
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(Pharmacy.COLUMN_NAME, json.get("name").toString());
+				values.put(Pharmacy.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(Pharmacy.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+		} else if(currentUrl.equals("dental.php")){
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(Dental.COLUMN_NAME, json.get("name").toString());
+				values.put(Dental.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(Dental.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+		} else if(currentUrl.equals("ngo.php")) {
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(Ngo.COLUMN_NAME, json.get("name").toString());
+				values.put(Ngo.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(Ngo.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+		} else if(currentUrl.equals("rab.php")) {
+			for (int i = 1; i < jsonArr.length(); i++) {
+				JSONObject json = (JSONObject) jsonArr.get(i);
+				values.put(Rab.COLUMN_NAME, json.get("name").toString());
+				values.put(Rab.COLUMN_ADDRESS, json.get("address").toString());
+				long newRowID = db.insert(Rab.TABLE_NAME, null, values);
+				Log.d("insertid", ""+newRowID);
+			}
+		} else {
+			Log.d("error", "URL MISMATCH ERROR");
+		}
+	
 		
 	}
 	
@@ -145,24 +269,26 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		String url = "http://eatl-android-farhan.net63.net/output/";
 		
 		if(v.getId() == newspaperB.getId()) {
-			url = url.concat("newspaper.php");
+			currentUrl = "newspaper.php";
 		} else if(v.getId() == hospitalB.getId()) {
-			url = url.concat("hospital.php");
+			currentUrl = "hospital.php";
 		} else if(v.getId() == pharmacyB.getId()) {
-			url = url.concat("pharmacy.php");
+			currentUrl = "pharmacy.php";
 		} else if(v.getId() == dentalB.getId()) {
-			url = url.concat("dental.php");
+			currentUrl = "dental.php";
 		} else if(v.getId() == bloodB.getId()) {
-			url = url.concat("bloodbank.php");
+			currentUrl = "bloodbank.php";
 		} else if(v.getId() == ngoB.getId()) {
-			url = url.concat("ngo.php");
+			currentUrl = "ngo.php";
 		} else if(v.getId() == rabB.getId()) {
-			url = url.concat("rab.php");
+			currentUrl = "rab.php";
 		}
+		
+		url = url.concat(currentUrl);
 		 
 		//Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
 		if(networkAvailable()) {
-            FetchDataC fetch = new FetchDataC(this);
+            fetch = new FetchDataC(this);
             fetch.response = this;
             fetch.execute(url);
         }
