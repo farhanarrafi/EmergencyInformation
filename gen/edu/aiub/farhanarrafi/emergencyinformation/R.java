@@ -1906,7 +1906,8 @@ containing a value of this type.
         public static final int ic_search_white=0x7f02003d;
     }
     public static final class id {
-        public static final int ListView_Display_Data=0x7f06004f;
+        public static final int ListViewDisplayData=0x7f06004f;
+        public static final int ListViewMainActivity=0x7f060053;
         public static final int action_bar=0x7f060040;
         public static final int action_bar_activity_content=0x7f06001d;
         public static final int action_bar_container=0x7f06003f;
@@ -1921,14 +1922,12 @@ containing a value of this type.
         public static final int action_mode_bar_stub=0x7f06003c;
         public static final int action_mode_close_button=0x7f060025;
         public static final int action_search=0x7f060055;
-        public static final int action_settings=0x7f060056;
+        public static final int action_settings=0x7f060054;
         public static final int activity_chooser_view_content=0x7f060026;
         public static final int alertTitle=0x7f060030;
         public static final int always=0x7f060012;
         public static final int beginning=0x7f060017;
-        public static final int buttonLoadData=0x7f060053;
         public static final int buttonPanel=0x7f060036;
-        public static final int buttonSearchActivity=0x7f060054;
         public static final int checkbox=0x7f060038;
         public static final int collapseActionView=0x7f060014;
         public static final int contentPanel=0x7f060031;
@@ -2049,7 +2048,7 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_select_dialog_material=0x7f030017;
         public static final int abc_simple_dropdown_hint=0x7f030018;
-        public static final int activity_data_display=0x7f030019;
+        public static final int activity_display_data=0x7f030019;
         public static final int activity_load_data=0x7f03001a;
         public static final int activity_main=0x7f03001b;
         public static final int activity_search=0x7f03001c;
@@ -2059,7 +2058,7 @@ containing a value of this type.
         public static final int support_simple_spinner_dropdown_item=0x7f030020;
     }
     public static final class menu {
-        public static final int data_display=0x7f0d0000;
+        public static final int display_data=0x7f0d0000;
         public static final int main=0x7f0d0001;
         public static final int search=0x7f0d0002;
     }
@@ -2132,6 +2131,7 @@ containing a value of this type.
         public static final int search_hint=0x7f0b0018;
         public static final int textview_load_data=0x7f0b0013;
         public static final int title_activity_data_display=0x7f0b0019;
+        public static final int title_activity_display_data=0x7f0b001d;
         public static final int title_section1=0x7f0b001a;
         public static final int title_section2=0x7f0b001b;
         public static final int title_section3=0x7f0b001c;

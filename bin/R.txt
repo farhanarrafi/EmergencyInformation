@@ -406,7 +406,8 @@ int drawable abc_textfield_search_material 0x7f02003a
 int drawable ic_launcher 0x7f02003b
 int drawable ic_search_black 0x7f02003c
 int drawable ic_search_white 0x7f02003d
-int id ListView_Display_Data 0x7f06004f
+int id ListViewDisplayData 0x7f06004f
+int id ListViewMainActivity 0x7f060053
 int id action_bar 0x7f060040
 int id action_bar_activity_content 0x7f06001d
 int id action_bar_container 0x7f06003f
@@ -421,14 +422,12 @@ int id action_mode_bar 0x7f06003d
 int id action_mode_bar_stub 0x7f06003c
 int id action_mode_close_button 0x7f060025
 int id action_search 0x7f060055
-int id action_settings 0x7f060056
+int id action_settings 0x7f060054
 int id activity_chooser_view_content 0x7f060026
 int id alertTitle 0x7f060030
 int id always 0x7f060012
 int id beginning 0x7f060017
-int id buttonLoadData 0x7f060053
 int id buttonPanel 0x7f060036
-int id buttonSearchActivity 0x7f060054
 int id checkbox 0x7f060038
 int id collapseActionView 0x7f060014
 int id contentPanel 0x7f060031
@@ -521,7 +520,7 @@ int layout abc_search_dropdown_item_icons_2line 0x7f030015
 int layout abc_search_view 0x7f030016
 int layout abc_select_dialog_material 0x7f030017
 int layout abc_simple_dropdown_hint 0x7f030018
-int layout activity_data_display 0x7f030019
+int layout activity_display_data 0x7f030019
 int layout activity_load_data 0x7f03001a
 int layout activity_main 0x7f03001b
 int layout activity_search 0x7f03001c
@@ -529,7 +528,7 @@ int layout select_dialog_item_material 0x7f03001d
 int layout select_dialog_multichoice_material 0x7f03001e
 int layout select_dialog_singlechoice_material 0x7f03001f
 int layout support_simple_spinner_dropdown_item 0x7f030020
-int menu data_display 0x7f0d0000
+int menu display_data 0x7f0d0000
 int menu main 0x7f0d0001
 int menu search 0x7f0d0002
 int string abc_action_bar_home_description 0x7f0b0001
@@ -558,6 +557,7 @@ int string icon 0x7f0b0017
 int string search_hint 0x7f0b0018
 int string textview_load_data 0x7f0b0013
 int string title_activity_data_display 0x7f0b0019
+int string title_activity_display_data 0x7f0b001d
 int string title_section1 0x7f0b001a
 int string title_section2 0x7f0b001b
 int string title_section3 0x7f0b001c

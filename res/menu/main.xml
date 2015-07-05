@@ -7,7 +7,12 @@
           android:icon="@drawable/ic_search_white"
           android:title="@string/action_search"
           app:showAsAction="ifRoom"
-          android:actionViewClass="android.widget.SearchView" />
+          android:actionViewClass="android.widget.SearchView"
+          app:actionViewClass="android.widget.SearchView" />
+    
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:showAsAction="never" />
   
 
 </menu>

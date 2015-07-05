@@ -19,9 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 import edu.aiub.farhanarrafi.emergencyinformation.helper.AsycResponseI;
 import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseHelperC;
@@ -34,6 +32,8 @@ import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Pharmac
 import edu.aiub.farhanarrafi.emergencyinformation.helper.DatabaseTablesC.Rab;
 import edu.aiub.farhanarrafi.emergencyinformation.helper.FetchDataC;
 
+
+
 @SuppressWarnings("deprecation")
 public class LoadDataActivity extends ActionBarActivity implements AsycResponseI {
 	
@@ -41,13 +41,12 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 	
 	private static final String PREFERNCE_FIRST_RUN = "FIRST_RUN";
 	
-	TextView textView;
 	FetchDataC fetch;
 	DatabaseHelperC dbHelper;
 	ConnectivityManager connManager;
+	
 	String currentUrl = "";
 	JSONArray jsonArr;
-	ArrayAdapter<String> adapter;
 	SharedPreferences preference;
 	
 	@Override
@@ -234,8 +233,6 @@ public class LoadDataActivity extends ActionBarActivity implements AsycResponseI
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		
-		
 		
 		return super.onOptionsItemSelected(item);
 	}

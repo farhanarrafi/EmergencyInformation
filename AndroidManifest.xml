@@ -50,6 +50,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.aiub.farhanarrafi.emergencyinformation.LoadDataActivity" />
         </activity>
+        <activity
+            android:name=".DisplayDataActivity"
+            android:label="@string/title_activity_display_data"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.aiub.farhanarrafi.emergencyinformation.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
